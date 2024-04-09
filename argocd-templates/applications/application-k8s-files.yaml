@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: <APPLICATION NAME> # NOME DA APPLICATION
+  namespace: argocd # DEVE SER NO MESMO NAMESPACE EM QUE ESTIVER INSTALADO O ARGOCD
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<ORG_NAME>/<REPO_NAME>.git # REPOSITORIO COM OS MANIFESTOS
+    targetRevision: <BRANCH> # BRANCH A SER OBSERVADA PARA CADA MUDANÇA SER APLICADA
+    path: <TEMPLATES KUBERNETES FOLDER> # CAMINHO DA PASTA QUE CONTEM OS MANIFESTOS KUBERNETES OU HELM CHART VALUES 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: <NAMESPACE> # NAMESPACE ONDE A APLICAÇÃO SERÁ INSTALADA
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true # SE O NAMESPACE NÃO EXISTER SERÁ CRIADO
+
+
+  

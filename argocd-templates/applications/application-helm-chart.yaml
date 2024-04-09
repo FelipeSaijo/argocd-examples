@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: <APP NAME> # Nome de identificação do Application
+  namespace: argocd # Deve ser o mesmo namespace em que o argocd foi instalado
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: <APP NAMESPACE> # namespace onde a aplicação será criada
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+  ## Repos config
+  sources:
+  ## Chart Repo
+  - repoURL: 'https://<PAT>@raw.githubusercontent.com/<ORG NAME>/<HELM CHART REPO>/<BRANCH>/' # repositorio do helm chart. Caso repo seja publico remova "<PAT>@"
+    chart: <CHART NAME> # nome do helm chart
+    targetRevision: 1.0.0 # versão do chart
+    helm:
+      valueFiles:
+      - $source/<PATH TO VALUES FILE>/<FILE NAME>.yaml # $source é uma referencia ao App Repo, seguido pelo caminho até o arquivo de values
+  ## App Repo
+  - repoURL: 'https://github.com/<ORG NAME>/<REPO NAME>' # repositorio da aplicação com o arquivo de values
+    targetRevision: <BRANCH> # branch em que a Application irá procura o arquivo de values
+    ref: source
